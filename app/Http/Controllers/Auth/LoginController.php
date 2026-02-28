@@ -44,10 +44,19 @@ class LoginController extends Controller
         $clave   = md5(trim($request->input('clave')));
 
         try {
-            $resultado = DB::select('SELECT * FROM t_usuarios WHERE USUARIO = ? AND CLAVE = ?', [
-                $usuario,
-                $clave,
-            ]);
+            $resultado = DB::select("
+                SELECT TOP 1
+                    U.*,
+                    X.BODEGA AS DES_BOG_DF,
+                    X.BODEGA AS DES_BOG,
+                    X.ID     AS ID_BODEGA,
+                    1        AS cant_bog
+                FROM T_USUARIOS U
+                LEFT JOIN dbo.T_BODEGAS X ON X.BODEGA = U.BODEGA
+                WHERE U.USUARIO = ?
+                  AND U.CLAVE   = ?
+                  AND U.ESTADO  = 'A'
+            ", [$usuario, $clave]);
         } catch (\Exception $e) {
             // Mostrar error real temporalmente para diagnóstico (remover en producción)
             $mensajeError = config('app.debug')
@@ -79,13 +88,43 @@ class LoginController extends Controller
             'ses_BogDefault'   => $u->BODEGA,
             'ses_CopBodegaId'  => $u->BODEGA,
             'ses_CopBodega'    => $u->DES_BOG_DF,
-            'ses_DptoBodega'   => $u->DEPARTAMENTO,
-            'ses_CiudadBodega' => $u->CIUDAD,
+            'ses_DptoBodega'   => null,
+            'ses_CiudadBodega' => null,
         ]);
 
         $request->session()->regenerate();
 
+        // Cargar permisos del rol en sesión
+        $this->cargarPermisos((int) $u->ROLES_ID);
+
         return redirect()->route('dashboard');
+    }
+
+    /**
+     * Consulta los códigos de submódulos permitidos para el rol
+     * y los guarda en sesión como array plano de strings.
+     */
+    private function cargarPermisos(int $rolId): void
+    {
+        try {
+            $permisos = DB::select("
+                SELECT Y.NUMERO AS CODIGO
+                FROM T_PERMISOS_ROLES          M
+                INNER JOIN T_MODULOS_PERMISOS  X ON X.ID       = M.MODULOS_PERMISOS_ID
+                INNER JOIN T_MODULOS           Y ON Y.ID       = X.ID_MODULO
+                WHERE M.ID_ROLES  = ?
+                  AND X.ID_PERMISO = 1
+                ORDER BY Y.GRUPO
+            ", [$rolId]);
+
+            // Extraer solo los códigos como array plano: ["0101","0103",...]
+            $codigos = array_map(fn($row) => (string) $row->CODIGO, $permisos);
+
+            Session::put('ses_Permisos', $codigos);
+        } catch (\Exception $e) {
+            // Si falla la carga de permisos, sesión vacía (sin acceso a módulos)
+            Session::put('ses_Permisos', []);
+        }
     }
 
     /**

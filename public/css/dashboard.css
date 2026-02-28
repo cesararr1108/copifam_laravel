@@ -1,0 +1,30 @@
+/* Dashboard — Copifam */
+
+/* Scrollbar del sidebar */
+aside nav::-webkit-scrollbar {
+    width: 3px;
+}
+aside nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+aside nav::-webkit-scrollbar-thumb {
+    background-color: #f0f0f0;
+    border-radius: 9999px;
+}
+
+/* Scrollbar del contenido principal */
+main::-webkit-scrollbar {
+    width: 5px;
+}
+main::-webkit-scrollbar-track {
+    background: transparent;
+}
+main::-webkit-scrollbar-thumb {
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+}
+
+/* Transición suave del sidebar */
+aside {
+    min-width: 64px;
+}
