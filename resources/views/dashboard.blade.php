@@ -23,6 +23,7 @@
     <script>const USER_PERMISOS = @json($permisos ?? []);</script>
     {{-- dashboard.js debe cargarse ANTES de Alpine para que encuentre dashboard() --}}
     <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script src="{{ asset('js/copifam-modal.js') }}"></script>
     {{-- Alpine SIEMPRE al último con defer --}}
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
@@ -39,7 +40,7 @@
             <img src="{{ asset('storage/img/logo_copifam1.png') }}"
                  alt="Logo Copifam"
                  class="flex-shrink-0 object-contain transition-all duration-300"
-                 :class="sidebarOpen ? 'h-12 w-auto' : 'h-8 w-8'">
+                 :class="sidebarOpen ? 'h-17 w-auto' : 'h-8 w-8'">
         </div>
 
         {{-- Nav --}}
@@ -138,9 +139,10 @@
                         <p class="text-xs font-medium text-gray-700 leading-none">{{ Session::get('ses_CopNombres', '') }} {{ Session::get('ses_CopApellidos', '') }}</p>
                         <p class="text-[10px] text-gray-400 mt-0.5">{{ Session::get('ses_CopLogin', '') }}</p>
                     </div>
-                    <form method="POST" action="{{ route('logout') }}" class="ml-1">
+                    <form id="formLogout" method="POST" action="{{ route('logout') }}" class="ml-1">
                         @csrf
-                        <button type="submit" title="Cerrar sesión"
+                        <button type="button" title="Cerrar sesión"
+                                onclick="confirmarCerrarSesion()"
                                 class="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
@@ -210,6 +212,21 @@
         </main>
     </div>
 </div>
+
+{{-- Confirmación cerrar sesión --}}
+<script>
+    function confirmarCerrarSesion() {
+        CopifamModal.fire({
+            title: 'Cerrar sesión',
+            text: '¿Estás seguro de que deseas cerrar tu sesión? Tendrás que volver a iniciar sesión para acceder al sistema.',
+            icon: 'warning',
+            confirmText: 'Cerrar sesión',
+            cancelText: 'Cancelar',
+            confirmColor: '#EF4444',
+            onConfirm: () => document.getElementById('formLogout').submit()
+        });
+    }
+</script>
 
 {{-- SVG Icons registry (ocultos) --}}
 <div style="display:none">

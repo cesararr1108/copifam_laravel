@@ -18,7 +18,7 @@
             }
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('js/copifam-modal.js') }}"></script>
 </head>
 <body class="font-sans">
 
@@ -96,7 +96,7 @@
                     <input class="h-4 w-4 cursor-pointer accent-primary" type="checkbox" id="remember" name="remember">
                     <label class="text-sm cursor-pointer" for="remember">Recordarme</label>
                 </div>
-                <a href="#" class="text-sm underline underline-offset-2 hover:text-primary transition-colors">
+                <a href="{{ route('password.reset') }}" class="text-sm underline underline-offset-2 hover:text-primary transition-colors">
                     ¿Olvidó su contraseña?
                 </a>
             </div>
@@ -113,15 +113,29 @@
     </div>
 </div>
 
-{{-- SweetAlert para errores de credenciales --}}
+{{-- Modal personalizado para errores de credenciales --}}
 @if ($errors->has('error'))
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        Swal.fire({
+        CopifamModal.fire({
             title: 'Acceso denegado',
             text: '{{ $errors->first('error') }}',
             icon: 'error',
-            confirmButtonColor: '#ff1498'
+            confirmText: 'Entendido'
+        });
+    });
+</script>
+@endif
+
+{{-- Modal personalizado para contraseña actualizada correctamente --}}
+@if (session('success'))
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        CopifamModal.fire({
+            title: '¡Contraseña actualizada!',
+            text: '{{ session('success') }}',
+            icon: 'success',
+            confirmText: 'Continuar'
         });
     });
 </script>

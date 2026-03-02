@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
@@ -17,6 +18,13 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
 // Cerrar sesión
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// ─── Recuperación de contraseña ───────────────────────────────────────────────
+Route::get('/recuperar-contrasena',         [PasswordResetController::class, 'showForm'])->name('password.reset');
+Route::post('/recuperar-contrasena',        [PasswordResetController::class, 'enviarSolicitud'])->name('password.reset.post');
+Route::get('/recuperar-contrasena/enviado', [PasswordResetController::class, 'enviado'])->name('password.reset.sent');
+Route::get('/nueva-contrasena',             [PasswordResetController::class, 'showNuevaForm'])->name('password.nueva');
+Route::post('/nueva-contrasena',            [PasswordResetController::class, 'cambiarContrasena'])->name('password.nueva.post');
 
 // ─── Rutas protegidas (requieren sesión activa) ───────────────────────────────
 Route::middleware('session.check')->group(function () {

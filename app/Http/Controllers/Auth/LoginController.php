@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
@@ -41,7 +42,7 @@ class LoginController extends Controller
         ]);
 
         $usuario = strtoupper(trim($request->input('usuario')));
-        $clave   = md5(trim($request->input('clave')));
+        $clave   = trim($request->input('clave'));
 
         try {
             $resultado = DB::select("
@@ -54,11 +55,9 @@ class LoginController extends Controller
                 FROM T_USUARIOS U
                 LEFT JOIN dbo.T_BODEGAS X ON X.BODEGA = U.BODEGA
                 WHERE U.USUARIO = ?
-                  AND U.CLAVE   = ?
                   AND U.ESTADO  = 'A'
-            ", [$usuario, $clave]);
+            ", [$usuario]);
         } catch (\Exception $e) {
-            // Mostrar error real temporalmente para diagnóstico (remover en producción)
             $mensajeError = config('app.debug')
                 ? 'Error BD: ' . $e->getMessage()
                 : 'Error de conexión con la base de datos. Intente nuevamente.';
@@ -75,6 +74,16 @@ class LoginController extends Controller
         }
 
         $u = $resultado[0];
+
+        // Verificar contraseña: soporta Hash de Laravel
+        $claveValida = Hash::check($clave, $u->CLAVE);
+
+
+        if (!$claveValida) {
+            return back()
+                ->withInput($request->only('usuario'))
+                ->withErrors(['error' => 'El usuario o la contraseña son incorrectos.']);
+        }
 
         // Guardar sesión — reemplaza los $_SESSION del sistema anterior
         Session::put([
