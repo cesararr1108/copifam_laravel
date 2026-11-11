@@ -17,15 +17,24 @@ class CheckPermission
      */
     public function handle(Request $request, Closure $next, string $codigo): Response
     {
-        // Si no hay sesión activa, redirigir al login
+        // Si no hay sesión activa
         if (!Session::has('ses_CopId')) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['ok' => false, 'message' => 'Sesión expirada. Por favor recargue la página.'], 401);
+            }
             return redirect()->route('login');
         }
 
         $permisos = Session::get('ses_Permisos', []);
 
-        if (!in_array($codigo, $permisos, true)) {
-            // Sin permiso: redirigir al dashboard con mensaje de acceso denegado
+        // Normalizar a 4 dígitos para comparación robusta (por si la BD devuelve int)
+        $codigoNorm   = str_pad($codigo, 4, '0', STR_PAD_LEFT);
+        $permisosNorm = array_map(fn($p) => str_pad((string)(int)$p, 4, '0', STR_PAD_LEFT), $permisos);
+
+        if (!in_array($codigoNorm, $permisosNorm, true)) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['ok' => false, 'message' => 'No tienes permiso para acceder a este recurso.'], 403);
+            }
             return redirect()->route('dashboard')->with('error_permiso', 'No tienes permiso para acceder a ese módulo.');
         }
 

@@ -3,6 +3,7 @@ function dashboard() {
         sidebarOpen: true,
         activeModule: null,
         activeSub: null,
+        moduloCargando: false,
         currentTitle: 'Dashboard',
         currentBreadcrumb: 'Inicio',
         currentSubName: '',
@@ -89,6 +90,7 @@ function dashboard() {
                 id: '07', code:'07', name: 'Mercadeo', icon: 'mercadeo',
                 subs: [
                     { code: '0701', name: 'Teleferias' },
+                    { code: '0702', name: 'Shopping' },
                 ]
             },
             {
@@ -118,13 +120,28 @@ function dashboard() {
         ],
 
         init() {
-            // Filtrar el menú según los permisos del usuario en sesión
+            // Filtrar el menú según los permisos del usuario en sesión (compatibilidad números/strings)
+            const perms = (USER_PERMISOS || []).map(p => String(p));
             this.modules = this.modules
                 .map(mod => ({
                     ...mod,
-                    subs: mod.subs.filter(sub => USER_PERMISOS.includes(sub.code))
+                    subs: mod.subs.filter(sub => perms.includes(String(sub.code)))
                 }))
                 .filter(mod => mod.subs.length > 0);
+
+            // Ajustar estado de la barra lateral dependiendo del tamaño de pantalla
+            this.checkWidth();
+            window.addEventListener('resize', () => {
+                this.checkWidth();
+            });
+        },
+
+        checkWidth() {
+            if (window.innerWidth < 1024) {
+                this.sidebarOpen = false;
+            } else {
+                this.sidebarOpen = true;
+            }
         },
 
         getIcon(name) {
@@ -138,6 +155,22 @@ function dashboard() {
         },
 
         toggle(moduleId) {
+            // Si la sidebar está contraída, expandirla primero
+            if (!this.sidebarOpen) {
+                this.sidebarOpen = true;
+                this.activeModule = moduleId;
+                // Abrir automáticamente el primer submódulo disponible
+                const mod = this.modules.find(m => m.id === moduleId);
+                if (mod && mod.subs.length > 0) {
+                    const firstSub = mod.subs[0];
+                    setTimeout(() => {
+                        this.selectSub(moduleId, firstSub.code);
+                    }, 100);
+                }
+                return;
+            }
+            
+            // Si ya está expandida, comportamiento normal (toggle del módulo)
             this.activeModule = this.activeModule === moduleId ? null : moduleId;
             if (this.activeModule !== moduleId) {
                 this.activeSub = null;
@@ -147,6 +180,7 @@ function dashboard() {
         },
 
         selectSub(moduleId, subCode) {
+            this.moduloCargando = true;
             this.activeSub = subCode;
             const mod = this.modules.find(m => m.id === moduleId);
             const sub = mod.subs.find(s => s.code === subCode);
@@ -154,6 +188,7 @@ function dashboard() {
             this.currentSubName = sub.name;
             this.currentTitle = sub.name;
             this.currentBreadcrumb = mod.name + ' / ' + sub.name;
+            setTimeout(() => { this.moduloCargando = false; }, 600);
         }
     };
 }

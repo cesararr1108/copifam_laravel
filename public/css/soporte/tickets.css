@@ -1,0 +1,571 @@
+
+/* ── Módulo Soporte / Tickets — Copifam ─────────────────────── */
+
+/* Inputs y selects */
+.tkt-input:focus,
+.tkt-select:focus {
+    outline: none;
+    border-color: #ff1498;
+    box-shadow: 0 0 0 3px rgba(255, 20, 152, 0.15);
+}
+
+/* Botón primario */
+.tkt-btn-primary {
+    background-color: #ff1498;
+    color: #fff;
+    transition: background-color 0.15s ease;
+}
+.tkt-btn-primary:hover:not(:disabled) { background-color: #e0118a; }
+.tkt-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Botón secundario */
+.tkt-btn-secondary {
+    background-color: #f3f4f6;
+    color: #374151;
+    transition: background-color 0.15s ease;
+}
+.tkt-btn-secondary:hover { background-color: #e5e7eb; }
+
+/* Botón ver detalle */
+.tkt-btn-view {
+    color: #ff1498;
+    background-color: #fff0f8;
+    transition: background-color 0.15s ease;
+}
+.tkt-btn-view:hover { background-color: #ffd6ef; }
+
+/* Cabecera de tabla */
+.tkt-th {
+    background-color: #C7F0FC;
+    color: #00AEEF;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.65rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #fce7f3;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ── Íconos de ordenamiento DataTables 2.x (rombos) ─────────── */
+
+/* th ordenable: asegurar que el ícono se vea */
+#tbl-tickets thead th.dt-orderable-asc,
+#tbl-tickets thead th.dt-orderable-desc,
+#tbl-seguimiento thead th.dt-orderable-asc,
+#tbl-seguimiento thead th.dt-orderable-desc {
+    background-color: #C7F0FC !important;
+    color: #00AEEF !important;
+}
+
+/* Hover sobre columna ordenable */
+#tbl-tickets thead th.dt-orderable-asc:hover,
+#tbl-tickets thead th.dt-orderable-desc:hover,
+#tbl-seguimiento thead th.dt-orderable-asc:hover,
+#tbl-seguimiento thead th.dt-orderable-desc:hover {
+    background-color: #bae6fd !important;
+    color: #00AEEF !important;
+}
+
+/* Columna actualmente ordenada */
+#tbl-tickets thead th.dt-ordering-asc,
+#tbl-tickets thead th.dt-ordering-desc,
+#tbl-seguimiento thead th.dt-ordering-asc,
+#tbl-seguimiento thead th.dt-ordering-desc {
+    background-color: #bae6fd !important;
+    color: #00AEEF !important;
+}
+
+/* Contenedor del ícono de orden */
+#tbl-tickets thead th .dt-column-order,
+#tbl-seguimiento thead th .dt-column-order {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 1px;
+    margin-left: 5px;
+    vertical-align: middle;
+    opacity: 0.4;
+    font-size: 0 !important;       /* oculta texto nativo de DataTables (ej: "A-2") */
+    line-height: 0 !important;
+    width: 10px;
+}
+
+/* Rombo de arriba (asc) */
+#tbl-tickets thead th .dt-column-order::before,
+#tbl-seguimiento thead th .dt-column-order::before {
+    content: '▲';
+    font-size: 0.45rem;
+    line-height: 1;
+    color: #00AEEF;
+    display: block;
+}
+
+/* Rombo de abajo (desc) */
+#tbl-tickets thead th .dt-column-order::after,
+#tbl-seguimiento thead th .dt-column-order::after {
+    content: '▼';
+    font-size: 0.45rem;
+    line-height: 1;
+    color: #00AEEF;
+    display: block;
+}
+
+/* Ordenando ascendente: rombo de arriba activo */
+#tbl-tickets thead th.dt-ordering-asc .dt-column-order,
+#tbl-seguimiento thead th.dt-ordering-asc .dt-column-order {
+    opacity: 1;
+}
+#tbl-tickets thead th.dt-ordering-asc .dt-column-order::before,
+#tbl-seguimiento thead th.dt-ordering-asc .dt-column-order::before {
+    color: #ff1498;
+    opacity: 1;
+}
+#tbl-tickets thead th.dt-ordering-asc .dt-column-order::after,
+#tbl-seguimiento thead th.dt-ordering-asc .dt-column-order::after {
+    opacity: 0.3;
+}
+
+/* Ordenando descendente: rombo de abajo activo */
+#tbl-tickets thead th.dt-ordering-desc .dt-column-order,
+#tbl-seguimiento thead th.dt-ordering-desc .dt-column-order {
+    opacity: 1;
+}
+#tbl-tickets thead th.dt-ordering-desc .dt-column-order::before,
+#tbl-seguimiento thead th.dt-ordering-desc .dt-column-order::before {
+    opacity: 0.3;
+}
+#tbl-tickets thead th.dt-ordering-desc .dt-column-order::after,
+#tbl-seguimiento thead th.dt-ordering-desc .dt-column-order::after {
+    color: #ff1498;
+    opacity: 1;
+}
+
+/* Hover: mostrar íconos con más opacidad */
+#tbl-tickets thead th.dt-orderable-asc:hover .dt-column-order,
+#tbl-tickets thead th.dt-orderable-desc:hover .dt-column-order,
+#tbl-seguimiento thead th.dt-orderable-asc:hover .dt-column-order,
+#tbl-seguimiento thead th.dt-orderable-desc:hover .dt-column-order {
+    opacity: 0.75;
+}
+
+/* Filas */
+.tkt-tr:hover { background-color: #fdf2f8; }
+
+/* Badges prioridad */
+.tkt-badge-alto    { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.tkt-badge-medio   { background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; }
+.tkt-badge-bajo    { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+
+/* Badges estado */
+.tkt-estado-pendiente  { background: #fef9c3; color: #854d0e;  border: 1px solid #fde68a; }
+.tkt-estado-proceso    { background: #dbeafe; color: #1e40af;  border: 1px solid #bfdbfe; }
+.tkt-estado-revision   { background: #ede9fe; color: #5b21b6;  border: 1px solid #c4b5fd; }
+.tkt-estado-devuelto   { background: #ffedd5; color: #9a3412;  border: 1px solid #fdba74; }
+.tkt-estado-solucionado{ background: #d1fae5; color: #065f46;  border: 1px solid #a7f3d0; }
+.tkt-estado-no-apto    { background: #fee2e2; color: #991b1b;  border: 1px solid #fecaca; }
+
+/* Búsqueda */
+.tkt-search:focus {
+    outline: none;
+    border-color: #ff1498;
+    box-shadow: 0 0 0 3px rgba(255, 20, 152, 0.12);
+}
+
+/* Spinner */
+@keyframes tkt-spin { to { transform: rotate(360deg); } }
+.tkt-spin { animation: tkt-spin 0.7s linear infinite; }
+
+/* Spinner modal — mismo estilo que los modales del proyecto */
+.tkt-loading-box {
+    background: #fff;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.tkt-loading-header {
+    background-color: #ff1498;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+.tkt-loading-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    animation: tkt-spin 0.75s linear infinite;
+}
+
+.tkt-loading-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.tkt-loading-body {
+    padding: 1rem 1.5rem;
+    background: #fff;
+}
+
+.tkt-loading-sub {
+    font-size: 0.78rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Modal backdrop */
+.tkt-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+/* Modal caja */
+.tkt-modal-box {
+    background: #fff;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 780px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+/* Etiqueta de campo en modal */
+.tkt-detail-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #9d174d;
+    margin-bottom: 0.2rem;
+}
+
+.tkt-detail-value {
+    font-size: 0.8rem;
+    color: #374151;
+    word-break: break-word;
+}
+
+/* Separador de sección en modal */
+.tkt-section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #ff1498;
+    border-bottom: 1px solid #fce7f3;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Filtro radio button activo */
+.tkt-filter-active {
+    background-color: #00AEEF;
+    color: #fff;
+    border-color: #00AEEF;
+}
+
+/* Zona de pegado de archivos */
+.tkt-paste-zone {
+    min-height: 88px;
+    outline: none;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+.tkt-paste-zone:focus {
+    border-color: #ff1498;
+    box-shadow: 0 0 0 3px rgba(255, 20, 152, 0.12);
+}
+
+/* Botón aceptar ticket */
+.tkt-btn-aceptar {
+    background-color: #16a34a;
+    color: #fff;
+    border: 1px solid #15803d;
+    box-shadow: 0 1px 3px rgba(22, 163, 74, 0.25), inset 0 1px 0 rgba(255,255,255,0.12);
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+.tkt-btn-aceptar:hover:not(:disabled) {
+    background-color: #15803d;
+    box-shadow: 0 3px 8px rgba(22, 163, 74, 0.35), inset 0 1px 0 rgba(255,255,255,0.12);
+    transform: translateY(-1px);
+}
+.tkt-btn-aceptar:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
+.tkt-btn-aceptar:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Botón rechazar ticket */
+.tkt-btn-rechazar {
+    background-color: #fff;
+    color: #dc2626;
+    border: 1.5px solid #fca5a5;
+    box-shadow: 0 1px 3px rgba(220, 38, 38, 0.1);
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+.tkt-btn-rechazar:hover:not(:disabled) {
+    background-color: #fef2f2;
+    border-color: #dc2626;
+    box-shadow: 0 3px 8px rgba(220, 38, 38, 0.2);
+    transform: translateY(-1px);
+}
+.tkt-btn-rechazar:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
+.tkt-btn-rechazar:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Botón finalizar ticket */
+.tkt-btn-finalizar {
+    background-color: #00AEEF;
+    color: #fff;
+    border: 1px solid #0090c8;
+    box-shadow: 0 1px 3px rgba(0, 174, 239, 0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+.tkt-btn-finalizar:hover:not(:disabled) {
+    background-color: #0090c8;
+    box-shadow: 0 3px 8px rgba(0, 174, 239, 0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(-1px);
+}
+.tkt-btn-finalizar:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
+.tkt-btn-finalizar:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Botón confirmar resolución (usuario valida) */
+.tkt-btn-resolver {
+    background-color: #16a34a;
+    color: #fff;
+    border: 1px solid #15803d;
+    box-shadow: 0 1px 3px rgba(22, 163, 74, 0.25), inset 0 1px 0 rgba(255,255,255,0.12);
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+.tkt-btn-resolver:hover:not(:disabled) {
+    background-color: #15803d;
+    box-shadow: 0 3px 8px rgba(22, 163, 74, 0.35), inset 0 1px 0 rgba(255,255,255,0.12);
+    transform: translateY(-1px);
+}
+.tkt-btn-resolver:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
+.tkt-btn-resolver:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Botón devolver ticket (usuario rechaza resolución) */
+.tkt-btn-devolver {
+    background-color: #fff;
+    color: #ea580c;
+    border: 1.5px solid #fdba74;
+    box-shadow: 0 1px 3px rgba(234, 88, 12, 0.1);
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+.tkt-btn-devolver:hover:not(:disabled) {
+    background-color: #fff7ed;
+    border-color: #ea580c;
+    box-shadow: 0 3px 8px rgba(234, 88, 12, 0.2);
+    transform: translateY(-1px);
+}
+.tkt-btn-devolver:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
+.tkt-btn-devolver:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── DataTables: override paginación rosa/azul centrada ─────── */
+
+/* El wrapper no debe tener estilos propios — el card padre los pone */
+#tbl-seguimiento_wrapper {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* Primera fila del layout (contiene la tabla) — sin padding extra */
+#tbl-seguimiento_wrapper .dt-layout-row:first-child {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Todas las filas del layout sin float */
+#tbl-seguimiento_wrapper .dt-layout-row {
+    float: none !important;
+    clear: both !important;
+}
+
+#tbl-seguimiento_wrapper .dt-layout-row::after {
+    display: none !important;
+}
+
+/* Ocultar la búsqueda y el length nativo */
+#tbl-seguimiento_wrapper .dt-search,
+#tbl-seguimiento_wrapper .dt-length {
+    display: none !important;
+}
+
+/* Tabla a ancho completo */
+#tbl-seguimiento_wrapper table.dataTable {
+    width: 100% !important;
+    margin: 0 !important;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+/* Filas de la tabla */
+#tbl-seguimiento_wrapper table.dataTable tbody tr:hover {
+    background-color: #fdf2f8;
+}
+
+/* Celda del cuerpo */
+#tbl-seguimiento_wrapper table.dataTable tbody td {
+    padding: 0.65rem 1rem;
+    font-size: 0.75rem;
+    color: #374151;
+    border-bottom: 1px solid #f9fafb;
+    vertical-align: middle;
+}
+
+/* Info texto — "Página X de Y" centrado */
+#tbl-seguimiento_wrapper .dt-info {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #9ca3af;
+    padding: 0.6rem 0 0.3rem;
+    width: 100%;
+    letter-spacing: 0.02em;
+}
+
+/* Layout última fila: info + paginación centrados */
+#tbl-seguimiento_wrapper .dt-layout-row:last-child {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.3rem;
+    padding: 0.6rem 1rem 0.9rem;
+    background: #fff;
+}
+
+/* La celda que envuelve la paginación */
+#tbl-seguimiento_wrapper .dt-layout-row:last-child .dt-layout-cell {
+    width: 100% !important;
+    float: none !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* Wrapper de paginación */
+#tbl-seguimiento_wrapper .dt-paging,
+#tbl-seguimiento_wrapper nav[aria-label] {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0.2rem;
+    flex-wrap: wrap;
+    width: auto !important;
+    float: none !important;
+}
+
+/* Cada botón de página */
+#tbl-seguimiento_wrapper .dt-paging-button,
+#tbl-seguimiento_wrapper .dt-paging button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 1.9rem;
+    width: auto;
+    height: 1.9rem;
+    padding: 0 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 0.375rem !important;
+    border: 1px solid #e5e7eb !important;
+    background: #fff !important;
+    color: #6b7280 !important;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* Hover */
+#tbl-seguimiento_wrapper .dt-paging-button:not(.current):not(.disabled):hover,
+#tbl-seguimiento_wrapper .dt-paging button:not(.current):not(.disabled):hover {
+    border-color: #ff1498 !important;
+    color: #ff1498 !important;
+    background: #fff0f8 !important;
+}
+
+/* Página activa — rosa */
+#tbl-seguimiento_wrapper .dt-paging-button.current,
+#tbl-seguimiento_wrapper .dt-paging-button.current:hover,
+#tbl-seguimiento_wrapper .dt-paging button.current,
+#tbl-seguimiento_wrapper .dt-paging button.current:hover {
+    background: #ff1498 !important;
+    border-color: #ff1498 !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 1px 4px rgba(255,20,152,0.25) !important;
+}
+
+/* Deshabilitados */
+#tbl-seguimiento_wrapper .dt-paging-button.disabled,
+#tbl-seguimiento_wrapper .dt-paging-button.disabled:hover,
+#tbl-seguimiento_wrapper .dt-paging button.disabled,
+#tbl-seguimiento_wrapper .dt-paging button[disabled] {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+    color: #d1d5db !important;
+    background: #f9fafb !important;
+    border-color: #f3f4f6 !important;
+}
+
+/* Ellipsis */
+#tbl-seguimiento_wrapper .dt-paging .ellipsis {
+    color: #d1d5db;
+    font-size: 0.75rem;
+    padding: 0 0.25rem;
+    line-height: 2rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Ocultar el processing nativo de DT por completo */
+#tbl-seguimiento_processing { display: none !important; }
+#tbl-tickets_processing     { display: none !important; }
+
+/* ── DataTables tickets: mismo estilo que seguimiento ─────── */
+#tbl-tickets_wrapper {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+#tbl-tickets_wrapper .dt-layout-row:first-child { margin: 0 !important; padding: 0 !important; }
+#tbl-tickets_wrapper .dt-layout-row { float: none !important; clear: both !important; }
+#tbl-tickets_wrapper .dt-layout-row::after { display: none !important; }
+#tbl-tickets_wrapper .dt-search,
+#tbl-tickets_wrapper .dt-length { display: none !important; }
+#tbl-tickets_wrapper table.dataTable { width: 100% !important; margin: 0 !important; border-bottom: 1px solid #f3f4f6; }
+#tbl-tickets_wrapper table.dataTable tbody tr:hover { background-color: #fdf2f8; }
+#tbl-tickets_wrapper table.dataTable tbody td { padding: 0.65rem 1rem; font-size: 0.75rem; color: #374151; border-bottom: 1px solid #f9fafb; vertical-align: middle; }
+#tbl-tickets_wrapper .dt-info { text-align: center; font-size: 0.7rem; font-weight: 500; color: #9ca3af; padding: 0.6rem 0 0.3rem; width: 100%; letter-spacing: 0.02em; }
+#tbl-tickets_wrapper .dt-layout-row:last-child { display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0.3rem; padding: 0.6rem 1rem 0.9rem; background: #fff; }
+#tbl-tickets_wrapper .dt-layout-row:last-child .dt-layout-cell { width: 100% !important; float: none !important; display: flex !important; justify-content: center !important; align-items: center !important; }
+#tbl-tickets_wrapper .dt-paging, #tbl-tickets_wrapper nav[aria-label] { display: flex !important; justify-content: center !important; align-items: center !important; gap: 0.2rem; flex-wrap: wrap; width: auto !important; float: none !important; }
+#tbl-tickets_wrapper .dt-paging-button, #tbl-tickets_wrapper .dt-paging button { display: inline-flex !important; align-items: center !important; justify-content: center !important; min-width: 1.9rem; width: auto; height: 1.9rem; padding: 0 0.5rem; font-size: 0.7rem; font-weight: 500; border-radius: 0.375rem !important; border: 1px solid #e5e7eb !important; background: #fff !important; color: #6b7280 !important; cursor: pointer; transition: all 0.15s ease; margin: 0; white-space: nowrap; }
+#tbl-tickets_wrapper .dt-paging-button:not(.current):not(.disabled):hover, #tbl-tickets_wrapper .dt-paging button:not(.current):not(.disabled):hover { border-color: #ff1498 !important; color: #ff1498 !important; background: #fff0f8 !important; }
+#tbl-tickets_wrapper .dt-paging-button.current, #tbl-tickets_wrapper .dt-paging-button.current:hover, #tbl-tickets_wrapper .dt-paging button.current, #tbl-tickets_wrapper .dt-paging button.current:hover { background: #ff1498 !important; border-color: #ff1498 !important; color: #fff !important; font-weight: 700 !important; box-shadow: 0 1px 4px rgba(255,20,152,0.25) !important; }
+#tbl-tickets_wrapper .dt-paging-button.disabled, #tbl-tickets_wrapper .dt-paging button.disabled, #tbl-tickets_wrapper .dt-paging button[disabled] { opacity: 0.35 !important; cursor: not-allowed !important; color: #d1d5db !important; background: #f9fafb !important; border-color: #f3f4f6 !important; }
+
+/* ── Garantizar que thead de tickets no herede background-image:none ── */
+#tbl-tickets thead th,
+#tbl-tickets thead td,
+#tbl-seguimiento thead th,
+#tbl-seguimiento thead td {
+    background-image: unset !important;
+}

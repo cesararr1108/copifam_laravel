@@ -47,9 +47,10 @@
             </p>
 
             {{-- Campo usuario --}}
-            <div class="flex items-center w-full mt-8 bg-transparent border h-12 rounded-full overflow-hidden pl-6 gap-2
+            <div class="flex items-center w-full mt-8 bg-transparent border h-12 rounded-full overflow-hidden pl-6 gap-2 relative
                         {{ $errors->has('usuario') ? 'border-red-400' : 'border-gray-300/60' }}
-                        focus-within:border-primary transition-colors">
+                        focus-within:border-primary transition-colors"
+                 id="usuarioContainer">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" fill="#9CA3AF"/>
                 </svg>
@@ -64,6 +65,11 @@
                     class="bg-transparent text-gray-500/80 placeholder-gray-400 outline-none text-sm w-full h-full"
                     required
                 >
+                <div id="credencialesGuardadasIndicador" class="hidden absolute right-4 flex items-center gap-1 text-xs text-green-500 pr-2" title="Tienes credenciales guardadas">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                    </svg>
+                </div>
             </div>
             @error('usuario')
                 <p class="w-full text-red-500 text-xs mt-1 pl-6">{{ $message }}</p>
@@ -92,9 +98,12 @@
 
             {{-- Recordarme / Olvidé contraseña --}}
             <div class="w-full flex items-center justify-between mt-5 text-gray-500/80">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 group">
                     <input class="h-4 w-4 cursor-pointer accent-primary" type="checkbox" id="remember" name="remember">
-                    <label class="text-sm cursor-pointer" for="remember">Recordarme</label>
+                    <label class="text-sm cursor-pointer select-none" for="remember" title="Guarda tu usuario y contraseña en este navegador">Recordarme</label>
+                    <svg class="w-3.5 h-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                 </div>
                 <a href="{{ route('password.reset') }}" class="text-sm underline underline-offset-2 hover:text-primary transition-colors">
                     ¿Olvidó su contraseña?

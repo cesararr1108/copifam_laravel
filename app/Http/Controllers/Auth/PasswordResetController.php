@@ -40,9 +40,9 @@ class PasswordResetController extends Controller
             $user = DB::selectOne("
                 SELECT TOP 1 USUARIO, CORREO, ESTADO
                 FROM T_USUARIOS
-                WHERE USUARIO = ?
+                WHERE USUARIO = ? 
             ", [$usuario]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()
                 ->withInput($request->only('usuario'))
                 ->withErrors(['usuario' => 'Error de conexión con la base de datos. Intente nuevamente.']);
@@ -81,7 +81,7 @@ class PasswordResetController extends Controller
                 INSERT INTO T_PASSWORD_RESETS (USUARIO, TOKEN, EXPIRA_EN, USADO)
                 VALUES (?, ?, DATEADD(MINUTE, 60, GETDATE()), 0)
             ", [$usuario, $token]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()
                 ->withInput($request->only('usuario'))
                 ->withErrors(['usuario' => 'Error al generar el enlace de recuperación. Intente nuevamente.']);
@@ -99,7 +99,7 @@ class PasswordResetController extends Controller
                 $message->to($correo)
                         ->subject('Restablecer contraseña — Copifam');
             });
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()
                 ->withInput($request->only('usuario'))
                 ->withErrors(['usuario' => 'Error SMTP: ' . $e->getMessage()]);
@@ -120,20 +120,19 @@ class PasswordResetController extends Controller
     /**
      * Muestra el formulario para ingresar la nueva contraseña.
      */
-    public function showNuevaForm(Request $request): View|RedirectResponse
+    public function showNuevaForm(Request $request, string $token): View|RedirectResponse
     {
-        $token = $request->query('token');
-
-        if (!$token) {
+        $reset = null;
+        try {
+            $reset = DB::selectOne("
+                SELECT USUARIO, TOKEN, EXPIRA_EN, USADO
+                FROM T_PASSWORD_RESETS
+                WHERE TOKEN = ? AND USADO = 0 AND EXPIRA_EN > GETDATE()
+            ", [$token]);
+        } catch (\Throwable $e) {
             return redirect()->route('password.reset')
-                ->withErrors(['usuario' => 'El enlace no contiene un token válido.']);
+                ->withErrors(['usuario' => 'Error de conexión. No se pudo verificar el enlace. Intente nuevamente.']);
         }
-
-        $reset = DB::selectOne("
-            SELECT USUARIO, TOKEN, EXPIRA_EN, USADO
-            FROM T_PASSWORD_RESETS
-            WHERE TOKEN = ? AND USADO = 0 AND EXPIRA_EN > GETDATE()
-        ", [$token]);
 
         if (!$reset) {
             return redirect()->route('password.reset')
@@ -182,7 +181,7 @@ class PasswordResetController extends Controller
             DB::update("
                 UPDATE T_PASSWORD_RESETS SET USADO = 1 WHERE TOKEN = ?
             ", [$token]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()->withErrors(['clave' => 'Error al actualizar la contraseña. Intente nuevamente.']);
         }
 

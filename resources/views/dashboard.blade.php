@@ -12,22 +12,98 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { primary: '#ff1498' },
+                    colors: { primary: '#ff1498', secondary: '#00AEEF' },
                     fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] }
                 }
             }
         }
     </script>
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/usuarios.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/soporte/tickets.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/gestion_humana/asistencia.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/mercadeo/shopping.css') }}">
+    {{-- DataTables CSS --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
+    @stack('styles')
     {{-- Permisos del usuario inyectados desde Laravel --}}
     <script>const USER_PERMISOS = @json($permisos ?? []);</script>
+    {{-- jQuery (requerido por DataTables) --}}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    {{-- DataTables JS --}}
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
     {{-- dashboard.js debe cargarse ANTES de Alpine para que encuentre dashboard() --}}
     <script src="{{ asset('js/dashboard.js') }}"></script>
     <script src="{{ asset('js/copifam-modal.js') }}"></script>
+    {{-- Scripts de módulos cargados antes de Alpine --}}
+    <script src="{{ asset('js/admin/usuarios.js') }}"></script>
+    <script src="{{ asset('js/soporte/tickets.js') }}"></script>
+    <script src="{{ asset('js/gestion_humana/asistencia.js') }}"></script>
+    <script src="{{ asset('js/mercadeo/shopping.js') }}"></script>
+    {{-- Chart.js — para el tab de Análisis de tickets --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    @stack('scripts')
     {{-- Alpine SIEMPRE al último con defer --}}
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        #page-loader {
+            position: fixed; inset: 0; z-index: 99999;
+            background: #fff;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 1rem;
+            transition: opacity 0.3s ease;
+        }
+        #page-loader.fade-out { opacity: 0; pointer-events: none; }
+        #page-loader .loader-spinner {
+            width: 2.5rem; height: 2.5rem;
+            border: 3px solid #fce7f3;
+            border-top-color: #ff1498;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #page-loader .loader-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem; font-weight: 600;
+            color: #6b7280;
+            letter-spacing: 0.02em;
+        }
+    </style>
 </head>
-<body class="font-sans bg-gray-50 text-gray-700" x-data="dashboard()" x-init="init()">
+<body class="font-sans bg-gray-50 text-gray-700" x-data="dashboard()" x-init="init()"
+      @toggle-sidebar.window="sidebarOpen = !sidebarOpen">
+
+{{-- Watchers Alpine para mejorar UX --}}
+<script>
+    // Escuchar cambios en sidebarOpen para cerrar el menú cuando se contrae
+    document.addEventListener('alpine:initialized', function() {
+        const app = Alpine.raw(Alpine.$data(document.body));
+        if (app) {
+            Alpine.watch(app, 'sidebarOpen', (newVal) => {
+                if (!newVal) {
+                    // Cuando se contrae la sidebar, cerrar el módulo activo pero mantener submódulo
+                    // para que se vea el contenido en pantalla completa
+                }
+            });
+        }
+    });
+</script>
+
+{{-- Spinner de carga inicial — se oculta cuando Alpine termina de inicializar --}}
+<div id="page-loader">
+    <div class="loader-spinner"></div>
+    <span class="loader-text">Cargando...</span>
+</div>
+<script>
+    document.addEventListener('alpine:initialized', function () {
+        var el = document.getElementById('page-loader');
+        if (el) {
+            el.classList.add('fade-out');
+            setTimeout(function () { el.style.display = 'none'; }, 320);
+        }
+    });
+</script>
 
 <div class="flex h-screen overflow-hidden">
 
@@ -36,7 +112,8 @@
            :class="sidebarOpen ? 'w-64' : 'w-16'">
 
         {{-- Logo --}}
-        <div class="flex items-center gap-3 px-4 py-5 border-b border-gray-100 overflow-hidden">
+        <div class="flex items-center gap-3 px-4 py-5 border-b border-gray-100 overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
+             @click="activeSub = null; activeModule = null; currentTitle = 'Dashboard'; currentBreadcrumb = 'Inicio'">
             <img src="{{ asset('storage/img/logo_copifam1.png') }}"
                  alt="Logo Copifam"
                  class="flex-shrink-0 object-contain transition-all duration-300"
@@ -53,7 +130,7 @@
                             :class="activeModule === mod.id
                                 ? 'text-white'
                                 : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'"
-                            :style="activeModule === mod.id ? 'background-color:#ff1498' : ''">
+                            :style="activeModule === mod.id ? 'background-color:#00AEEF' : ''">
 
                         {{-- Icono --}}
                         <span class="flex-shrink-0 w-5 h-5" x-html="getIcon(mod.icon)"></span>
@@ -80,7 +157,7 @@
                          x-transition:leave-start="opacity-100"
                          x-transition:leave-end="opacity-0"
                          class="mt-0.5 ml-4 pl-3 border-l-2 space-y-0.5 pb-1"
-                         style="border-color:#ff149840">
+                         style="border-color:#00AEEF40">
                         <template x-for="sub in mod.subs" :key="sub.code">
                             <a href="#"
                                @click.prevent="selectSub(mod.id, sub.code)"
@@ -117,8 +194,27 @@
         {{-- Header --}}
         <header class="bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between flex-shrink-0">
             <div>
-                <h1 class="text-sm font-semibold text-gray-800" x-text="currentTitle"></h1>
-                <p class="text-xs text-gray-400 mt-0.5" x-text="currentBreadcrumb"></p>
+                <template x-if="activeSub">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                             style="background-color:#ff149815">
+                            <span class="w-5 h-5" x-html="getIcon(currentModuleIcon)"></span>
+                        </div>
+                        <div>
+                            <h1 class="text-sm font-semibold text-gray-800" x-text="currentSubName"></h1>
+                            <p class="text-xs text-gray-400 mt-0.5">
+                                <span x-text="currentBreadcrumb"></span>
+                                <span class="ml-2 text-[11px] text-gray-400">Código: <span x-text="activeSub"></span></span>
+                            </p>
+                        </div>
+                    </div>
+                </template>
+                <template x-if="!activeSub">
+                    <div>
+                        <h1 class="text-sm font-semibold text-gray-800" x-text="currentTitle"></h1>
+                        <p class="text-xs text-gray-400 mt-0.5" x-text="currentBreadcrumb"></p>
+                    </div>
+                </template>
             </div>
             <div class="flex items-center gap-3">
                 {{-- Notificaciones --}}
@@ -173,7 +269,7 @@
                 {{-- Cards resumen módulos --}}
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-8 w-full max-w-3xl">
                     <template x-for="mod in modules" :key="mod.id">
-                        <button @click="toggle(mod.id); sidebarOpen = true"
+                        <button @click="toggle(mod.id); if (!sidebarOpen) sidebarOpen = true;"
                                 class="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-100 hover:border-pink-200 hover:shadow-sm transition-all duration-200 group">
                             <span class="text-2xl w-8 h-8" x-html="getIcon(mod.icon)"></span>
                             <span class="text-xs font-medium text-gray-600 group-hover:text-gray-800 text-center leading-tight" x-text="mod.name"></span>
@@ -187,19 +283,33 @@
             <div x-show="activeSub"
                  x-transition:enter="transition ease-out duration-200"
                  x-transition:enter-start="opacity-0 translate-y-2"
-                 x-transition:enter-end="opacity-100 translate-y-0">
-                <div class="bg-white rounded-xl border border-gray-100 p-6">
-                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-50">
-                        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                             style="background-color:#ff149815">
-                            <span class="w-5 h-5" x-html="getIcon(currentModuleIcon)"></span>
-                        </div>
-                        <div>
-                            <h2 class="text-sm font-semibold text-gray-800" x-text="currentSubName"></h2>
-                            <p class="text-xs text-gray-400" x-text="'Código: ' + activeSub"></p>
-                        </div>
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 class="w-full h-full flex flex-col gap-4">
+
+                <div class="flex-grow w-full">
+                    {{-- Módulo 0301 — Usuarios --}}
+                    <div x-show="activeSub === '0301'">
+                        @include('admin.usuarios')
                     </div>
-                    <div class="flex flex-col items-center justify-center py-12 text-center text-gray-300">
+
+                    {{-- Módulo 1101 — Control de Asistencia --}}
+                    <div x-show="activeSub === '1101'">
+                        @include('gestion_humana.asistencia')
+                    </div>
+
+                    {{-- Módulo 0702 — Shopping --}}
+                    <div x-show="activeSub === '0702'">
+                        @include('mercadeo.shopping')
+                    </div>
+
+                    {{-- Módulo 1201 — Formulario de Soporte --}}
+                    <div x-show="activeSub === '1201'">
+                        @include('soporte.tickets')
+                    </div>
+
+                    {{-- Módulos en construcción --}}
+                    <div x-show="activeSub && activeSub !== '0301' && activeSub !== '1101' && activeSub !== '1201' && activeSub !== '0702'"
+                         class="flex flex-col items-center justify-center py-12 text-center text-gray-300 bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
                         <svg class="w-10 h-10 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
                         </svg>
@@ -207,6 +317,7 @@
                         <p class="text-xs mt-1" x-text="currentSubName + ' estará disponible próximamente.'"></p>
                     </div>
                 </div>
+
             </div>
 
         </main>
@@ -236,7 +347,7 @@
     <svg id="icon-reportes" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z"/></svg>
     <svg id="icon-tesoreria" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
     <svg id="icon-contabilidad" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605"/></svg>
-    <svg id="icon-mercadeo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 1 8.835-2.535m0 0A23.74 23.74 0 0 1 18.795 3c1.172 0 2.307.15 3.386.43A23.845 23.845 0 0 1 21 6.025m-10.66.635a23.848 23.848 0 0 1 8.835-2.535"/></svg>
+    <svg id="icon-mercadeo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 0 8.835-2.535m0 0A23.74 23.74 0 0 0 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46" /></svg>
     <svg id="icon-cartera" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
     <svg id="icon-gestion" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>
     <svg id="icon-soporte" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"/></svg>

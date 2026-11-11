@@ -1,0 +1,472 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Control de Asistencia — asistencia.css
+════════════════════════════════════════════════════════════════════════ */
+
+/* ── Select de empleados ─────────────────────────────────────────────── */
+.asis-select {
+    background-color: #fff;
+    cursor: pointer;
+    appearance: auto;
+}
+.asis-select:focus {
+    border-color: #ff1498;
+    box-shadow: 0 0 0 3px rgba(255, 20, 152, 0.15);
+}
+
+/* ── Inputs de texto ─────────────────────────────────────────────────── */
+.asis-input:focus,
+.asis-select:focus {
+    outline: none;
+    border-color: #ff1498;
+    box-shadow: 0 0 0 3px rgba(255, 20, 152, 0.15);
+}
+
+/* ── Botones de marcación ────────────────────────────────────────────── */
+.asis-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 0.625rem;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    white-space: nowrap;
+    color: #fff;
+    background-color: #ff1498;
+    box-shadow: 0 2px 6px rgba(0, 174, 239, 0.3);
+    min-width: 130px;
+}
+.asis-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+.asis-btn:not(:disabled):hover {
+    background-color: #0099d6;
+    box-shadow: 0 4px 10px rgba(0, 174, 239, 0.35);
+}
+
+/* ── Botón primario (buscar historial) ───────────────────────────────── */
+.asis-btn-primary {
+    background-color: #ff1498;
+    color: #fff;
+    transition: background-color 0.15s;
+}
+.asis-btn-primary:not(:disabled):hover {
+    background-color: #e0007e;
+}
+.asis-btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ── Botón secundario ────────────────────────────────────────────────── */
+.asis-btn-secondary {
+    background-color: #f3f4f6;
+    color: #374151;
+    transition: background-color 0.15s ease;
+}
+.asis-btn-secondary:hover {
+    background-color: #e5e7eb;
+}
+
+/* ── Tabla ───────────────────────────────────────────────────────────── */
+.asis-th {
+    background-color: #C7F0FC;
+    color: #00AEEF;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.65rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #fce7f3;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+}
+
+.asis-th:first-child { border-radius: 0; }
+
+.asis-td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 0.75rem;
+    color: #374151;
+    white-space: nowrap;
+}
+
+.asis-tr {
+    transition: background-color 0.12s;
+    background-color: #fff;
+}
+.asis-tr:hover {
+    background-color: #fdf2f8;
+}
+.asis-tr:last-child .asis-td {
+    border-bottom: none;
+}
+/* Todas las filas con fondo blanco */
+.asis-tr:nth-child(even) {
+    background-color: #fff;
+}
+.asis-tr:nth-child(even):hover {
+    background-color: #fdf2f8;
+}
+
+/* Cabeceras de las tablas DataTables */
+#histAsistenciasTable thead th,
+#histAsistenciasTable thead td,
+#histF4Table thead th,
+#histF4Table thead td,
+#asistUsuariosAdminTable thead th,
+#asistUsuariosAdminTable thead td {
+    background-color: #C7F0FC !important;
+    color: #00AEEF !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    padding: 0.6rem 1rem !important;
+    text-align: left !important;
+    border-bottom: 1px solid #bae6fd !important;
+    background-image: none !important;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* th ordenable: asegurar que el ícono se vea */
+#histAsistenciasTable thead th.dt-orderable-asc,
+#histAsistenciasTable thead th.dt-orderable-desc,
+#histF4Table thead th.dt-orderable-asc,
+#histF4Table thead th.dt-orderable-desc,
+#asistUsuariosAdminTable thead th.dt-orderable-asc,
+#asistUsuariosAdminTable thead th.dt-orderable-desc {
+    background-color: #C7F0FC !important;
+    color: #00AEEF !important;
+}
+
+/* Hover sobre columna ordenable */
+#histAsistenciasTable thead th.dt-orderable-asc:hover,
+#histAsistenciasTable thead th.dt-orderable-desc:hover,
+#histF4Table thead th.dt-orderable-asc:hover,
+#histF4Table thead th.dt-orderable-desc:hover,
+#asistUsuariosAdminTable thead th.dt-orderable-asc:hover,
+#asistUsuariosAdminTable thead th.dt-orderable-desc:hover {
+    background-color: #bae6fd !important;
+    color: #00AEEF !important;
+}
+
+/* Columna actualmente ordenada */
+#histAsistenciasTable thead th.dt-ordering-asc,
+#histAsistenciasTable thead th.dt-ordering-desc,
+#histF4Table thead th.dt-ordering-asc,
+#histF4Table thead th.dt-ordering-desc,
+#asistUsuariosAdminTable thead th.dt-ordering-asc,
+#asistUsuariosAdminTable thead th.dt-ordering-desc {
+    background-color: #bae6fd !important;
+    color: #00AEEF !important;
+}
+
+/* Contenedor del ícono de orden */
+#histAsistenciasTable thead th .dt-column-order,
+#histF4Table thead th .dt-column-order,
+#asistUsuariosAdminTable thead th .dt-column-order {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 1px;
+    margin-left: 5px;
+    vertical-align: middle;
+    opacity: 0.4;
+    font-size: 0 !important;       /* oculta texto nativo de DataTables (ej: "A-2") */
+    line-height: 0 !important;
+    width: 10px;
+}
+
+/* Rombo de arriba (asc) */
+#histAsistenciasTable thead th .dt-column-order::before,
+#histF4Table thead th .dt-column-order::before,
+#asistUsuariosAdminTable thead th .dt-column-order::before {
+    content: '▲';
+    font-size: 0.45rem;
+    line-height: 1;
+    color: #00AEEF;
+    display: block;
+}
+
+/* Rombo de abajo (desc) */
+#histAsistenciasTable thead th .dt-column-order::after,
+#histF4Table thead th .dt-column-order::after,
+#asistUsuariosAdminTable thead th .dt-column-order::after {
+    content: '▼';
+    font-size: 0.45rem;
+    line-height: 1;
+    color: #00AEEF;
+    display: block;
+}
+
+/* Ordenando ascendente: rombo de arriba activo */
+#histAsistenciasTable thead th.dt-ordering-asc .dt-column-order,
+#histF4Table thead th.dt-ordering-asc .dt-column-order,
+#asistUsuariosAdminTable thead th.dt-ordering-asc .dt-column-order {
+    opacity: 1;
+}
+#histAsistenciasTable thead th.dt-ordering-asc .dt-column-order::before,
+#histF4Table thead th.dt-ordering-asc .dt-column-order::before,
+#asistUsuariosAdminTable thead th.dt-ordering-asc .dt-column-order::before {
+    color: #ff1498;
+    opacity: 1;
+}
+#histAsistenciasTable thead th.dt-ordering-asc .dt-column-order::after,
+#histF4Table thead th.dt-ordering-asc .dt-column-order::after,
+#asistUsuariosAdminTable thead th.dt-ordering-asc .dt-column-order::after {
+    opacity: 0.3;
+}
+
+/* Ordenando descendente: rombo de abajo activo */
+#histAsistenciasTable thead th.dt-ordering-desc .dt-column-order,
+#histF4Table thead th.dt-ordering-desc .dt-column-order,
+#asistUsuariosAdminTable thead th.dt-ordering-desc .dt-column-order {
+    opacity: 1;
+}
+#histAsistenciasTable thead th.dt-ordering-desc .dt-column-order::before,
+#histF4Table thead th.dt-ordering-desc .dt-column-order::before,
+#asistUsuariosAdminTable thead th.dt-ordering-desc .dt-column-order::before {
+    opacity: 0.3;
+}
+#histAsistenciasTable thead th.dt-ordering-desc .dt-column-order::after,
+#histF4Table thead th.dt-ordering-desc .dt-column-order::after,
+#asistUsuariosAdminTable thead th.dt-ordering-desc .dt-column-order::after {
+    color: #ff1498;
+    opacity: 1;
+}
+
+/* Hover: mostrar íconos con más opacidad */
+#histAsistenciasTable thead th.dt-orderable-asc:hover .dt-column-order,
+#histAsistenciasTable thead th.dt-orderable-desc:hover .dt-column-order,
+#histF4Table thead th.dt-orderable-asc:hover .dt-column-order,
+#histF4Table thead th.dt-orderable-desc:hover .dt-column-order,
+#asistUsuariosAdminTable thead th.dt-orderable-asc:hover .dt-column-order,
+#asistUsuariosAdminTable thead th.dt-orderable-desc:hover .dt-column-order {
+    opacity: 0.75;
+}
+.asis-badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+
+/* ── Modales ─────────────────────────────────────────────────────────── */
+.asis-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+}
+
+.asis-modal-box {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 440px;
+    overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   DataTables — Paginación Historial (Copifam estándar de Usuarios)
+════════════════════════════════════════════════════════════════════════ */
+
+/* DataTables wrapper */
+#histAsistenciasTable_processing,
+#histF4Table_processing,
+#asistUsuariosAdminTable_processing { 
+    display: none !important; 
+}
+
+#histAsistenciasTable_wrapper,
+#histF4Table_wrapper,
+#asistUsuariosAdminTable_wrapper {
+    font-size: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+/* Ocultar el input de búsqueda nativo de DT */
+#histAsistenciasTable_wrapper .dt-search,
+#histF4Table_wrapper .dt-search,
+#asistUsuariosAdminTable_wrapper .dt-search { 
+    display: none !important; 
+}
+
+/* Ocultar selector de registros */
+#histAsistenciasTable_wrapper .dt-length,
+#histF4Table_wrapper .dt-length,
+#asistUsuariosAdminTable_wrapper .dt-length { 
+    display: none !important; 
+}
+
+/* Centrar la sección de info + paginación */
+#histAsistenciasTable_wrapper .dt-layout-row,
+#histF4Table_wrapper .dt-layout-row,
+#asistUsuariosAdminTable_wrapper .dt-layout-row {
+    float: none !important;
+    clear: both !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+#histAsistenciasTable_wrapper .dt-layout-cell,
+#histF4Table_wrapper .dt-layout-cell,
+#asistUsuariosAdminTable_wrapper .dt-layout-cell {
+    float: none !important;
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+/* Info "Página X de Y" */
+#histAsistenciasTable_wrapper .dt-info,
+#histF4Table_wrapper .dt-info,
+#asistUsuariosAdminTable_wrapper .dt-info {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-bottom: 0.35rem;
+    text-align: center;
+    padding: 0;
+}
+
+/* Contenedor de paginación */
+#histAsistenciasTable_wrapper .dt-paging,
+#histF4Table_wrapper .dt-paging,
+#asistUsuariosAdminTable_wrapper .dt-paging {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    float: none !important;
+    gap: 0.2rem !important;
+    flex-wrap: wrap !important;
+}
+
+/* Botones de página */
+#histAsistenciasTable_wrapper .dt-paging .dt-paging-button,
+#histF4Table_wrapper .dt-paging .dt-paging-button,
+#asistUsuariosAdminTable_wrapper .dt-paging .dt-paging-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 1.9rem !important;
+    min-width: 1.9rem !important;
+    padding: 0 0.5rem !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0.375rem !important;
+    background: #fff !important;
+    color: #374151 !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    transition: background 0.12s, border-color 0.12s, color 0.12s !important;
+    box-shadow: none !important;
+    line-height: 1 !important;
+}
+#histAsistenciasTable_wrapper .dt-paging .dt-paging-button:hover:not(.disabled),
+#histF4Table_wrapper .dt-paging .dt-paging-button:hover:not(.disabled),
+#asistUsuariosAdminTable_wrapper .dt-paging .dt-paging-button:hover:not(.disabled) {
+    background: #fff0f8 !important;
+    border-color: #ff1498 !important;
+    color: #ff1498 !important;
+}
+#histAsistenciasTable_wrapper .dt-paging .dt-paging-button.current,
+#histAsistenciasTable_wrapper .dt-paging .dt-paging-button.current:hover,
+#histF4Table_wrapper .dt-paging .dt-paging-button.current,
+#histF4Table_wrapper .dt-paging .dt-paging-button.current:hover,
+#asistUsuariosAdminTable_wrapper .dt-paging .dt-paging-button.current,
+#asistUsuariosAdminTable_wrapper .dt-paging .dt-paging-button.current:hover {
+    background: #ff1498 !important;
+    border-color: #ff1498 !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 1px 4px rgba(255, 20, 152, 0.25) !important;
+}
+#histAsistenciasTable_wrapper .dt-paging .dt-paging-button.disabled,
+#histAsistenciasTable_wrapper .dt-paging .dt-paging-button.disabled:hover,
+#histF4Table_wrapper .dt-paging .dt-paging-button.disabled,
+#histF4Table_wrapper .dt-paging .dt-paging-button.disabled:hover,
+#asistUsuariosAdminTable_wrapper .dt-paging .dt-paging-button.disabled,
+#asistUsuariosAdminTable_wrapper .dt-paging .dt-paging-button.disabled:hover {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+    background: #f9fafb !important;
+    color: #d1d5db !important;
+    border-color: #e5e7eb !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Spinner de carga (estilo igual a usuarios)
+════════════════════════════════════════════════════════════════════════ */
+
+@keyframes asis-spin {
+    to { transform: rotate(360deg); }
+}
+.asis-spin {
+    animation: asis-spin 0.7s linear infinite;
+}
+
+/* ── Spinner modal (DataTable cargando) ─────────────────────── */
+.asis-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+}
+.asis-loading-box {
+    background: #fff;
+    border-radius: 1rem;
+    max-width: 320px;
+    width: 90%;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+.asis-loading-header {
+    background-color: #ff1498;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+.asis-loading-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #fff;
+    animation: asis-spin 0.75s linear infinite;
+    flex-shrink: 0;
+}
+.asis-loading-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+}
+.asis-loading-body {
+    padding: 1rem 1.5rem;
+}
+.asis-loading-sub {
+    font-size: 0.78rem;
+    color: #6b7280;
+}

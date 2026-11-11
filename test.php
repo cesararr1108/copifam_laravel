@@ -1,19 +1,12 @@
-<?php 
-$serverName = "75.76.77.73";
+<?php
 
-$connectionOptions = array(
-    "Database" => "copifam_sin_lote",
-    "Uid" => "copifam",
-    "PWD" => "C0p1f4m$%",
-    "CharacterSet" => "UTF-8",
-    "Encrypt" => "yes",
-    "TrustServerCertificate" => "yes"
-);
-
-$conn = sqlsrv_connect($serverName, $connectionOptions);
-
-if ($conn === false) {
-    die(print_r(sqlsrv_errors(), true));
+try {
+    $conn = new PDO(
+        "sqlsrv:Server=192.168.1.49,1433;Database=copiweb_sin_lote",
+        "TU_USUARIO",
+        "TU_PASSWORD"
+    );
+    echo "OK CONECTADO";
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
-
-echo "✅ Conexion exitosa";

@@ -114,6 +114,9 @@ window.CopifamModal = (function () {
             confirmColor = '#ff1498',
             onConfirm   = null,
             onCancel    = null,
+            // Opciones nuevas (por compatibilidad) — por defecto NO cerrar con overlay ni Escape
+            allowOverlayClose = false,
+            allowEscapeClose  = false,
         } = opts;
 
         const iconData = icons[icon] || icons.info;
@@ -126,7 +129,10 @@ window.CopifamModal = (function () {
         const overlay = document.createElement('div');
         overlay.id = 'copifam-modal-overlay';
         overlay.innerHTML = `
-            <div id="copifam-modal-box">
+            <div id="copifam-modal-box" style="position:relative">
+                <button id="cm-close-x" aria-label="Cerrar" style="position:absolute;right:.6rem;top:.6rem;border:none;background:transparent;padding:.25rem;cursor:pointer">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
                 <div class="cm-icon-wrap" style="background:${iconData.bg}; color:${iconData.color}">
                     ${iconData.svg}
                 </div>
@@ -147,10 +153,13 @@ window.CopifamModal = (function () {
             setTimeout(() => overlay.remove(), 150);
         }
 
-        // Cerrar al hacer clic en el overlay (fuera del box)
-        overlay.addEventListener('click', function (e) {
-            if (e.target === overlay) { close(); if (onCancel) onCancel(); }
-        });
+        // Antes: cerrar al hacer clic en el overlay (fuera del box)
+        // Ahora: sólo si allowOverlayClose === true
+        if (allowOverlayClose) {
+            overlay.addEventListener('click', function (e) {
+                if (e.target === overlay) { close(); if (onCancel) onCancel(); }
+            });
+        }
 
         document.getElementById('cm-confirm-btn').addEventListener('click', function () {
             close();
@@ -164,11 +173,20 @@ window.CopifamModal = (function () {
             });
         }
 
-        // Cerrar con Escape
+        // X (esquina superior) cierra como cancelar
+        const xbtn = document.getElementById('cm-close-x');
+        if (xbtn) {
+            xbtn.addEventListener('click', function () {
+                close();
+                if (onCancel) onCancel();
+            });
+        }
+
+        // Cerrar con Escape sólo si allowEscapeClose === true
         function onKey(e) {
             if (e.key === 'Escape') { close(); document.removeEventListener('keydown', onKey); if (onCancel) onCancel(); }
         }
-        document.addEventListener('keydown', onKey);
+        if (allowEscapeClose) document.addEventListener('keydown', onKey);
     }
 
     return { fire };

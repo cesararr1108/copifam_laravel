@@ -1,0 +1,316 @@
+/* ── Módulo Usuarios — Copifam ──────────────────────────────── */
+
+/* Barra de título del formulario */
+.usu-form-header {
+    background-color: #ff1498;
+}
+
+/* Inputs y selects: foco rosado */
+.usu-input:focus,
+.usu-select:focus {
+    outline: none;
+    border-color: #ff1498;
+    box-shadow: 0 0 0 3px rgba(255, 20, 152, 0.15);
+}
+
+/* Botón guardar */
+.usu-btn-primary {
+    background-color: #ff1498;
+    color: #fff;
+    transition: background-color 0.15s ease;
+}
+.usu-btn-primary:hover:not(:disabled) {
+    background-color: #e0118a;
+}
+.usu-btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Botón secundario */
+.usu-btn-secondary {
+    background-color: #f3f4f6;
+    color: #374151;
+    transition: background-color 0.15s ease;
+}
+.usu-btn-secondary:hover {
+    background-color: #e5e7eb;
+}
+
+/* Botón editar en tabla */
+.usu-btn-edit {
+    color: #ff1498;
+    background-color: #fff0f8;
+    transition: background-color 0.15s ease;
+}
+.usu-btn-edit:hover {
+    background-color: #ffd6ef;
+}
+
+/* Badge estado activo */
+.usu-badge-activo {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+/* Badge estado inactivo */
+.usu-badge-inactivo {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* Cabecera de tabla */
+.usu-th,
+#tbl-usuarios thead th,
+#tbl-usuarios thead td {
+    background-color: #C7F0FC !important;
+    color: #00AEEF !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    padding: 0.6rem 1rem !important;
+    text-align: left !important;
+    border-bottom: 1px solid #bae6fd !important;
+    background-image: none !important;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Hover en cabeceras ordenables */
+#tbl-usuarios thead th.dt-orderable-asc:hover,
+#tbl-usuarios thead th.dt-orderable-desc:hover {
+    background-color: #bae6fd !important;
+    color: #00AEEF !important;
+}
+
+/* Columna actualmente ordenada */
+#tbl-usuarios thead th.dt-ordering-asc,
+#tbl-usuarios thead th.dt-ordering-desc {
+    background-color: #bae6fd !important;
+    color: #00AEEF !important;
+}
+
+/* ── Íconos de ordenamiento (rombos) DataTables 2.x ─────── */
+
+/* Contenedor del ícono */
+#tbl-usuarios thead th .dt-column-order {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 1px;
+    margin-left: 5px;
+    vertical-align: middle;
+    opacity: 0.4;
+    font-size: 0 !important;       /* oculta texto nativo de DataTables (ej: "A-2") */
+    line-height: 0 !important;
+    width: 10px;
+}
+
+/* Rombo arriba (asc) */
+#tbl-usuarios thead th .dt-column-order::before {
+    content: '▲';
+    font-size: 0.45rem;
+    line-height: 1;
+    color: #00AEEF;
+    display: block;
+}
+
+/* Rombo abajo (desc) */
+#tbl-usuarios thead th .dt-column-order::after {
+    content: '▼';
+    font-size: 0.45rem;
+    line-height: 1;
+    color: #00AEEF;
+    display: block;
+}
+
+/* Hover: más visibles */
+#tbl-usuarios thead th.dt-orderable-asc:hover .dt-column-order,
+#tbl-usuarios thead th.dt-orderable-desc:hover .dt-column-order {
+    opacity: 0.75;
+}
+
+/* Ordenando ASC: rombo de arriba rosa, abajo atenuado */
+#tbl-usuarios thead th.dt-ordering-asc .dt-column-order {
+    opacity: 1;
+}
+#tbl-usuarios thead th.dt-ordering-asc .dt-column-order::before {
+    color: #ff1498;
+    opacity: 1;
+}
+#tbl-usuarios thead th.dt-ordering-asc .dt-column-order::after {
+    opacity: 0.3;
+}
+
+/* Ordenando DESC: rombo de abajo rosa, arriba atenuado */
+#tbl-usuarios thead th.dt-ordering-desc .dt-column-order {
+    opacity: 1;
+}
+#tbl-usuarios thead th.dt-ordering-desc .dt-column-order::before {
+    opacity: 0.3;
+}
+#tbl-usuarios thead th.dt-ordering-desc .dt-column-order::after {
+    color: #ff1498;
+    opacity: 1;
+}
+
+/* Filas de tabla */
+.usu-tr:hover {
+    background-color: #fdf2f8;
+}
+
+/* Input de búsqueda — borde rosa al enfocar */
+.usu-search:focus {
+    outline: none;
+    border-color: #ff1498;
+    box-shadow: 0 0 0 3px rgba(255, 20, 152, 0.12);
+}
+
+/* Spinner animación */
+@keyframes usu-spin {
+    to { transform: rotate(360deg); }
+}
+.usu-spin {
+    animation: usu-spin 0.7s linear infinite;
+}
+
+/* ── Spinner modal (DataTable cargando) ─────────────────────── */
+.usu-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+}
+.usu-loading-box {
+    background: #fff;
+    border-radius: 1rem;
+    max-width: 320px;
+    width: 90%;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+.usu-loading-header {
+    background-color: #ff1498;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+.usu-loading-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #fff;
+    animation: usu-spin 0.75s linear infinite;
+    flex-shrink: 0;
+}
+.usu-loading-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+}
+.usu-loading-body {
+    padding: 1rem 1.5rem;
+}
+.usu-loading-sub {
+    font-size: 0.78rem;
+    color: #6b7280;
+}
+
+/* ── DataTables wrapper ─────────────────────────────────────── */
+#tbl-usuarios_processing { display: none !important; }
+
+#tbl-usuarios_wrapper {
+    font-size: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+/* Ocultar el input de búsqueda nativo de DT */
+#tbl-usuarios_wrapper .dt-search { display: none !important; }
+
+/* Ocultar selector de registros */
+#tbl-usuarios_wrapper .dt-length { display: none !important; }
+
+/* Centrar la sección de info + paginación */
+#tbl-usuarios_wrapper .dt-layout-row {
+    float: none !important;
+    clear: both !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+#tbl-usuarios_wrapper .dt-layout-cell {
+    float: none !important;
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+/* Info "Página X de Y" */
+#tbl-usuarios_wrapper .dt-info {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-bottom: 0.35rem;
+    text-align: center;
+    padding: 0;
+}
+
+/* Contenedor de paginación */
+#tbl-usuarios_wrapper .dt-paging {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    float: none !important;
+    gap: 0.2rem !important;
+    flex-wrap: wrap !important;
+}
+
+/* Botones de página */
+#tbl-usuarios_wrapper .dt-paging .dt-paging-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 1.9rem !important;
+    min-width: 1.9rem !important;
+    padding: 0 0.5rem !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0.375rem !important;
+    background: #fff !important;
+    color: #374151 !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    transition: background 0.12s, border-color 0.12s, color 0.12s !important;
+    box-shadow: none !important;
+    line-height: 1 !important;
+}
+#tbl-usuarios_wrapper .dt-paging .dt-paging-button:hover:not(.disabled) {
+    background: #fff0f8 !important;
+    border-color: #ff1498 !important;
+    color: #ff1498 !important;
+}
+#tbl-usuarios_wrapper .dt-paging .dt-paging-button.current,
+#tbl-usuarios_wrapper .dt-paging .dt-paging-button.current:hover {
+    background: #ff1498 !important;
+    border-color: #ff1498 !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 1px 4px rgba(255, 20, 152, 0.25) !important;
+}
+#tbl-usuarios_wrapper .dt-paging .dt-paging-button.disabled,
+#tbl-usuarios_wrapper .dt-paging .dt-paging-button.disabled:hover {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+    background: #f9fafb !important;
+    color: #d1d5db !important;
+    border-color: #e5e7eb !important;
+}
+

@@ -51,9 +51,11 @@ class LoginController extends Controller
                     X.BODEGA AS DES_BOG_DF,
                     X.BODEGA AS DES_BOG,
                     X.ID     AS ID_BODEGA,
-                    1        AS cant_bog
+                    1        AS cant_bog,
+                    D.DESCRIPCION AS DES_DPTO
                 FROM T_USUARIOS U
-                LEFT JOIN dbo.T_BODEGAS X ON X.BODEGA = U.BODEGA
+                LEFT JOIN dbo.T_BODEGAS X  ON X.BODEGA = U.BODEGA
+                LEFT JOIN dbo.T_DPTO_SYS D ON D.ID     = U.DPTO_ID
                 WHERE U.USUARIO = ?
                   AND U.ESTADO  = 'A'
             ", [$usuario]);
@@ -93,6 +95,7 @@ class LoginController extends Controller
             'ses_CopApellidos' => $u->APELLIDOS,
             'ses_CopRol'       => $u->ROLES_ID,
             'ses_CopDtoId'     => $u->DPTO_ID,
+            'ses_CopDpto'      => $u->DES_DPTO,   // Descripción del departamento
             'ses_TipodDoc'     => 0,
             'ses_BogDefault'   => $u->BODEGA,
             'ses_CopBodegaId'  => $u->BODEGA,
@@ -126,8 +129,8 @@ class LoginController extends Controller
                 ORDER BY Y.GRUPO
             ", [$rolId]);
 
-            // Extraer solo los códigos como array plano: ["0101","0103",...]
-            $codigos = array_map(fn($row) => (string) $row->CODIGO, $permisos);
+            // Extraer solo los códigos como array plano, zero-padded a 4 dígitos: ["0101","0301",...]
+            $codigos = array_map(fn($row) => str_pad((string)(int)$row->CODIGO, 4, '0', STR_PAD_LEFT), $permisos);
 
             Session::put('ses_Permisos', $codigos);
         } catch (\Exception $e) {

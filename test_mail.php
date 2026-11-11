@@ -1,6 +1,6 @@
 ﻿<?php
-require '/var/www/html/copifam_laravel/vendor/autoload.php';
-$app = require '/var/www/html/copifam_laravel/bootstrap/app.php';
+require '/var/www/copifam_laravel/vendor/autoload.php';
+$app = require '/var/www/copifam_laravel/bootstrap/app.php';
 $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
 try {

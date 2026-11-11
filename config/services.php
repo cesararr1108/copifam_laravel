@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'imap' => [
+        'user' => env('IMAP_USER'),
+        'pass' => env('IMAP_PASS'),
+    ],
+
+    'woocommerce' => [
+        'url' => env('WOOCOMMERCE_URL', 'https://copifam.com'),
+        'ck' => env('WOOCOMMERCE_CK', 'ck_cf4c4d5cdefee48f2dd66d8e791c88d9ad7187a5'),
+        'cs' => env('WOOCOMMERCE_CS', 'cs_1b4bb1a1ecd24aee785814c20f1fce6792216cbb'),
+    ],
+
 ];
